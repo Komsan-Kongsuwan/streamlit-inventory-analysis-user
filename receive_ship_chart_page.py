@@ -35,13 +35,17 @@ def render_chart_page():
 
     # --- Page Title ---
     st.markdown("<h2 style='text-align:left; font-size:28px;'>📊 Receive-Ship Visualization (6)</h2>", unsafe_allow_html=True)
-
+    
     if "receive_ship_data" not in st.session_state:
         st.warning("⚠️ No data found. Please upload files in the Data Loader page first.")
         return
 
     df_raw = st.session_state["receive_ship_data"].copy()
 
+
+    st.dataframe(df_raw)
+
+    
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
@@ -67,6 +71,9 @@ def render_chart_page():
     df_filtered = df_filtered[df_filtered["Rcv So Flag"].isin(["Rcv(increase)", "So(decrese)"])]
     df_filtered['Quantity[Unit1]'] = df_filtered['Quantity[Unit1]'].abs()
 
+
+    st.dataframe(df_filtered)
+    
     # ==========================================================
     # 📊 CHART
     # ==========================================================
