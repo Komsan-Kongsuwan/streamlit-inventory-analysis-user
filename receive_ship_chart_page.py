@@ -51,7 +51,7 @@ def render_chart_page():
 
     months = list(range(1,13))
     selected_month = st.sidebar.radio("Select Month (optional)", ["All"] + [calendar.month_abbr[m] for m in months], index=0)
-    selected_month_num = list(calendar.month_abbr).index(selected_month).zfill(2) if selected_month != "All" else None
+    selected_month_num = (str(list(calendar.month_abbr).index(selected_month)).zfill(2) if selected_month != "All" else None)
     items = st.multiselect("Item Code", df_raw["Item Code"].unique())
 
     # --- Apply filters ---
