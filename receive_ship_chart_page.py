@@ -59,7 +59,6 @@ def render_chart_page():
     if selected_year != "ALL":
         df_filtered = df_filtered[df_filtered["Year"] == selected_year]
     if selected_month_num:
-        selected_month_num = str(selected_month_num).zfill(2)
         df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]
     if items:
         df_filtered = df_filtered[df_filtered["Item Code"].isin(items)]
@@ -82,7 +81,7 @@ def render_chart_page():
         all_days_flags = pd.MultiIndex.from_product([total_days, chart_df["Rcv So Flag"].unique()], names=["Day","Rcv So Flag"])
         chart_df = chart_df.set_index(["Day","Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
         chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
-        chart_title = f"📊 Daily Receive-Ship in {selected_year}-{calendar.month_abbr[selected_month_num]}"
+        #chart_title = f"📊 Daily Receive-Ship in {selected_year}-{calendar.month_abbr[selected_month_num]}"
     elif selected_year != "ALL":
         chart_df = df_filtered.groupby(["Month","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         all_months_flags = pd.MultiIndex.from_product([months, chart_df["Rcv So Flag"].unique()], names=["Month","Rcv So Flag"])
