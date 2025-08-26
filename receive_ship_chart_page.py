@@ -51,7 +51,7 @@ def render_chart_page():
 
     months = list(range(1,13))
     selected_month = st.sidebar.radio("Select Month (optional)", ["All"] + [calendar.month_abbr[m] for m in months], index=0)
-    selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
+    selected_month_num = list(calendar.month_abbr).index(selected_month).zfill(2) if selected_month != "All" else None
     items = st.multiselect("Item Code", df_raw["Item Code"].unique())
 
     # --- Apply filters ---
@@ -59,7 +59,7 @@ def render_chart_page():
     if selected_year != "ALL":
         df_filtered = df_filtered[df_filtered["Year"] == selected_year]
     if selected_month_num:
-        df_filtered = df_filtered[df_filtered["Month"] == "01"]
+        df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]
     if items:
         df_filtered = df_filtered[df_filtered["Item Code"].isin(items)]
     if df_filtered.empty:
