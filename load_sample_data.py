@@ -25,4 +25,4 @@ def init_session_state():
     if "receive_ship_data" not in st.session_state:
         df = load_sample_data()
         st.session_state["receive_ship_data"] = df
-        st.session_state["selected_site"] = df["Site"].unique()[0]  # init site
+        #st.session_state["selected_site"] = df["Site"].unique()[0]  # init site
