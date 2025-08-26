@@ -57,8 +57,8 @@ def render_chart_page():
     # --- Apply filters ---
     df_filtered = df_raw.copy()
     if selected_year != "ALL":
-        st.dataframe(df_raw["Month"])
-        st.dataframe(df_filtered["Month"])
+        st.dataframe(df_raw["Month","Year"])
+        st.dataframe(df_filtered["Month","Year"])
         df_filtered = df_filtered[df_filtered["Year"] == selected_year]
     if selected_month_num:
         df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]
