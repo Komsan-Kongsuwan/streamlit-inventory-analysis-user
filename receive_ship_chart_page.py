@@ -43,7 +43,6 @@ def render_chart_page():
     df_raw = st.session_state["receive_ship_data"].copy()
 
 
-    st.dataframe(df_raw)
 
     
     # --- Sidebar filters ---
@@ -53,7 +52,7 @@ def render_chart_page():
     months = list(range(1,13))
     selected_month = st.sidebar.radio("Select Month (optional)", ["All"] + [calendar.month_abbr[m] for m in months], index=0)
     selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
-
+    st.write(selected_month_num)
     items = st.multiselect("Item Code", df_raw["Item Code"].unique())
 
     # --- Apply filters ---
@@ -72,7 +71,6 @@ def render_chart_page():
     df_filtered['Quantity[Unit1]'] = df_filtered['Quantity[Unit1]'].abs()
 
 
-    st.dataframe(df_filtered)
     
     # ==========================================================
     # 📊 CHART
