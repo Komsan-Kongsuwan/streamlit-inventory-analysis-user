@@ -59,8 +59,7 @@ def render_chart_page():
     if selected_year != "ALL":
         df_filtered = df_filtered[df_filtered["Year"] == selected_year]
     if selected_month_num:
-        selected_month_num = str(selected_month_num).zfill(2)
-        df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]
+        df_filtered = df_filtered[df_filtered["Month"] == str(selected_month_num).zfill(2)]
     if items:
         df_filtered = df_filtered[df_filtered["Item Code"].isin(items)]
     if df_filtered.empty:
