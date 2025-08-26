@@ -9,10 +9,12 @@ def load_sample_data():
     df = pd.read_excel("receive_ship_raw_data.xlsx")
     time.sleep(0.3)  # simulate delay
 
+    """
     # Step 2: Clean Year / Month
     df['Year'] = df['Year'].astype(int).astype(str)
     df['Month'] = df['Month'].astype(int).astype(str).str.zfill(2)
     time.sleep(0.3)
+    """
 
     # Step 3: Create Period column
     df['Period'] = pd.to_datetime(df['Year'] + "-" + df['Month'], format="%Y-%m")
