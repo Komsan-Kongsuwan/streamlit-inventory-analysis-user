@@ -36,11 +36,11 @@ def render_chart_page():
     # --- Page Title ---
     st.markdown("<h2 style='text-align:left; font-size:28px;'>📊 Receive-Ship Visualization (6)</h2>", unsafe_allow_html=True)
 
-    if "official_data" not in st.session_state:
+    if "receive_ship_data" not in st.session_state:
         st.warning("⚠️ No data found. Please upload files in the Data Loader page first.")
         return
 
-    df_raw = st.session_state["official_data"].copy()
+    df_raw = st.session_state["receive_ship_data"].copy()
 
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
