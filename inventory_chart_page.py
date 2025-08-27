@@ -31,7 +31,7 @@ def render_chart_page():
 
     fig_bar = px.bar(
         df_raw,
-        x="x_label",
+        x="Operation Date",
         y="Quantity[Unit1]",
         color="Rcv So Flag",
         barmode="group",
