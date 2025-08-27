@@ -29,7 +29,7 @@ def render_chart_page():
 
     df_raw = st.session_state["daily_stock_data"].copy()
     df_raw.sort_values(["Operation Date"], ascending=False, inplace=True)
-    chart_df = df_filtered.groupby(["Month","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
+    chart_df = df_filtered.groupby(["Operation Date"], as_index=False)["Quantity[Unit1]"].sum()
     fig_bar = px.line(
         chart_df,
         x="Operation Date",
