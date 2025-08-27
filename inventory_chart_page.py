@@ -42,8 +42,8 @@ def render_chart_page():
 
     df_raw = st.session_state["daily_stock_data"].copy()
 
-    df_raw["Year"] = df_raw["Operation Date"].dt.year.astype(str)
-    df_raw["Month"] = df_raw["Operation Date"].dt.month.astype(str).str.zfill(2)
+    df_raw["Year"] = df_raw["Operation Date"].dt.year
+    df_raw["Month"] = df_raw["Operation Date"].dt.month
     
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
