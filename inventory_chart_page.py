@@ -88,8 +88,8 @@ def render_chart_page():
     
     else:
         # --- Full history across all years ---
-        chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
+        chart_df = df_filtered.groupby(["Month", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
+        chart_df["x_label"] = chart_df["Month"].astype(str)
         chart_title = "📊 Stock by Year"
 
     fig_line = px.line(
