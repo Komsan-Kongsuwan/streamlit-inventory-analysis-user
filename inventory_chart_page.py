@@ -85,7 +85,6 @@ def render_chart_page():
         chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         chart_df["x_label"] = chart_df["Operation Date"].astype(str)
         chart_title = f"📊 Daily Stock in {selected_year}"
-        dtick="M1",   # tick every month
     
     else:
         # --- Full history across all years ---
@@ -109,5 +108,10 @@ def render_chart_page():
         legend_title_text=""  # 👈 remove legend title
     )
     
-    
+   # --- Force x-axis ticks to be monthly ---
+    fig_line.update_xaxes(
+        dtick="M1",   # tick every month
+        tickformat="%b",  # show short month names (Jan, Feb, ...)
+        ticklabelmode="period"
+    )    
     st.plotly_chart(fig_line, use_container_width=True)
