@@ -59,7 +59,7 @@ def render_chart_page():
     df_filtered = df_raw.copy()
     if selected_year != "ALL":
         df_filtered = df_filtered[df_filtered["Year"] == selected_year]      
-    if selected_month_num:
+    if selected_month_num:  # only filter if a real month is selected
         df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]        
     if items:
         df_filtered = df_filtered[df_filtered["Item Code"].isin(items)]
@@ -70,25 +70,31 @@ def render_chart_page():
     # ==========================================================
     # 📊 CHART
     # ==========================================================
-    if selected_month_num:
-        df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
+    if selected_month_num:  
+        # --- Daily view (when specific month chosen) ---
+        df_filtered["Day"] = df_filtered["Operation Date"].dt.day
         total_days = pd.Series(range(1,32))
         chart_df = df_filtered.groupby(["Day","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         all_days_flags = pd.MultiIndex.from_product([total_days, chart_df["Rcv So Flag"].unique()], names=["Day","Rcv So Flag"])
         chart_df = chart_df.set_index(["Day","Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
         chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
         chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
-    elif selected_year != "ALL":
+    
+    elif selected_year != "ALL" and selected_month_num is None:
+        # --- Monthly view (when year chosen, but ALL month selected) ---
         chart_df = df_filtered.groupby(["Month","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         all_months_flags = pd.MultiIndex.from_product([months, chart_df["Rcv So Flag"].unique()], names=["Month","Rcv So Flag"])
         chart_df = chart_df.set_index(["Month","Rcv So Flag"]).reindex(all_months_flags, fill_value=0).reset_index()
         chart_df["x_label"] = chart_df["Month"].apply(lambda m: calendar.month_abbr[m])
         chart_title = f"📊 Monthly Stock in {selected_year}"  
+    
     else:
+        # --- FULL DAILY SERIES (when Year = ALL and Month = ALL) ---
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
-        chart_title = "📊 Stock by Year"
+        chart_df["x_label"] = chart_df["Operation Date"].dt.strftime("%Y-%m-%d")
+        chart_title = "📊 Stock Daily Series (All Years/All Months)"
 
+    
     fig_line = px.line(
         chart_df,
         x="x_label",
