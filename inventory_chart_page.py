@@ -32,7 +32,6 @@ def render_chart_page():
         df_raw,
         x="Operation Date",
         y="Quantity[Unit1]",
-        barmode="group",
         title="Daily stock",
         height=400   # chart height
     )
