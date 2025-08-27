@@ -28,11 +28,10 @@ def render_chart_page():
         return
 
     df_raw = st.session_state["daily_stock_data"].copy()
-    fig_bar = px.bar(
+    fig_bar = px.line(
         df_raw,
         x="Operation Date",
         y="Quantity[Unit1]",
-        color="Rcv So Flag",
         barmode="group",
         title="Daily stock",
         height=400   # chart height
