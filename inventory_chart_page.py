@@ -83,9 +83,15 @@ def render_chart_page():
     elif selected_year != "ALL":
         # --- Daily chart for the whole year ---
         chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
-        chart_title = f"📊 Daily Stock in {selected_year}"
     
+        # Use actual date as x-axis value
+        chart_df["x_value"] = chart_df["Operation Date"]
+    
+        # Format label by month name (but keep daily granularity in x_value)
+        chart_df["x_label"] = chart_df["Operation Date"].dt.strftime("%b")  # Jan, Feb, ...
+    
+        chart_title = f"📊 Daily Stock in {selected_year}"
+
     else:
         # --- Full history across all years ---
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
@@ -94,21 +100,20 @@ def render_chart_page():
 
 
     
-    fig_line = px.line(
+    fig = px.line(
         chart_df,
-        x="x_label",
+        x="x_value",  # continuous daily dates
         y="Quantity[Unit1]",
-        title=chart_title,
-        height=400   # chart height
+        color="Rcv So Flag",
     )
-    fig_line.update_layout(
-        xaxis_title="",
-        yaxis_title="Quantity",
-        template="plotly_white",
-        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        margin=dict(l=0, r=0, t=50, b=0),  # remove extra top/bottom margin
-        legend_title_text=""  # 👈 remove legend title
+    
+    # Show monthly ticks only
+    fig.update_xaxes(
+        dtick="M1",                # one tick per month
+        tickformat="%b",           # show short month name
+        ticklabelmode="period"     # align label at start of month
     )
+
     
     
     st.plotly_chart(fig_line, use_container_width=True)
