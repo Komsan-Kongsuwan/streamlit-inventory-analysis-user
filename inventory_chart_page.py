@@ -107,5 +107,12 @@ def render_chart_page():
         margin=dict(l=0, r=0, t=50, b=0),  # remove extra top/bottom margin
         legend_title_text=""  # 👈 remove legend title
     )   
-       
+
+    # --- Force x-axis ticks to be monthly ---
+    fig_line.update_xaxes(
+        dtick="M1",   # tick every month
+        tickformat="%b",  # show short month names (Jan, Feb, ...)
+        ticklabelmode="period"
+    )   
+    
     st.plotly_chart(fig_line, use_container_width=True)
