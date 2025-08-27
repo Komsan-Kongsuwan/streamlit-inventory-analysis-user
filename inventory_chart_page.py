@@ -80,7 +80,7 @@ def render_chart_page():
         chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
         chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
     
-    elif selected_year != "ALL":
+    #elif selected_year != "ALL":
         # --- Daily chart for the whole year ---
         #chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         #chart_df["x_label"] = chart_df["Operation Date"].astype(str)
