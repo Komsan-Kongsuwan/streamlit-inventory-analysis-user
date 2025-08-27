@@ -72,43 +72,43 @@ def render_chart_page():
     # ==========================================================
     if selected_month_num:
         # --- Daily chart for selected year+month ---
-        chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-    
-        chart_df["x_value"] = chart_df["Operation Date"]  # always provide real date
-        chart_df["x_label"] = chart_df["Operation Date"].dt.day.apply(day_suffix)
-    
+        df_filtered["Day"] = df_filtered["Operation Date"].dt.day
+        total_days = pd.Series(range(1,32))
+        chart_df = df_filtered.groupby(["Day","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
+        all_days_flags = pd.MultiIndex.from_product([total_days, chart_df["Rcv So Flag"].unique()], names=["Day","Rcv So Flag"])
+        chart_df = chart_df.set_index(["Day","Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
+        chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
         chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
     
     elif selected_year != "ALL":
         # --- Daily chart for the whole year ---
         chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-    
-        chart_df["x_value"] = chart_df["Operation Date"]
-        chart_df["x_label"] = chart_df["Operation Date"].dt.strftime("%b")
-    
+        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
         chart_title = f"📊 Daily Stock in {selected_year}"
     
     else:
         # --- Full history across all years ---
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_value"] = chart_df["Operation Date"]
         chart_df["x_label"] = chart_df["Operation Date"].astype(str)
-    
         chart_title = "📊 Stock by Year"
 
+
+    
     fig_line = px.line(
         chart_df,
-        x="x_value",   # always exists
+        x="x_label",
         y="Quantity[Unit1]",
-        color="Rcv So Flag",
-        title=chart_title
+        title=chart_title,
+        height=400   # chart height
     )
-
-    # Show monthly ticks only
-    fig_line.update_xaxes(
-        dtick="M1",                # one tick per month
-        tickformat="%b",           # show short month name
-        ticklabelmode="period"     # align label at start of month
+    fig_line.update_layout(
+        xaxis_title="",
+        yaxis_title="Quantity",
+        template="plotly_white",
+        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+        margin=dict(l=0, r=0, t=50, b=0),  # remove extra top/bottom margin
+        legend_title_text=""  # 👈 remove legend title
     )
+    
     
     st.plotly_chart(fig_line, use_container_width=True)
