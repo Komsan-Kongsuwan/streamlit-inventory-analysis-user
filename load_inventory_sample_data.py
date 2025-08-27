@@ -24,7 +24,7 @@ def load_sample_data():
 
 def init_session_state():
     """Ensure data is loaded into session_state only once."""
-    if "receive_ship_data" not in st.session_state:
+    if "daily_stock_data" not in st.session_state:
         df = load_sample_data()
-        st.session_state["receive_ship_data"] = df
+        st.session_state["daily_stock_data"] = df
         #st.session_state["selected_site"] = df["Site"].unique()[0]  # init site
