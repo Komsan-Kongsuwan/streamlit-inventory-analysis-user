@@ -109,10 +109,11 @@ def render_chart_page():
     )   
 
     # --- Force x-axis ticks to be monthly ---
-    fig_line.update_xaxes(
-        dtick="M1",   # tick every month
-        tickformat="%b",  # show short month names (Jan, Feb, ...)
-        ticklabelmode="period"
-    )   
+    if selected_year != "ALL":
+        fig_line.update_xaxes(
+            dtick="M1",   # tick every month
+            tickformat="%b",  # show short month names (Jan, Feb, ...)
+            ticklabelmode="period"
+        )   
     
     st.plotly_chart(fig_line, use_container_width=True)
