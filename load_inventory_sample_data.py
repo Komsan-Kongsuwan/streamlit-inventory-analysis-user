@@ -6,7 +6,7 @@ import time
 @st.cache_data
 def load_sample_data():
     # Step 1: Read Excel
-    df = pd.read_excel("receive_ship_raw_data.xlsx")
+    df = pd.read_excel("inventory_raw_data.xlsx")
     time.sleep(0.3)  # simulate delay
 
     """
