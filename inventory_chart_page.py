@@ -85,7 +85,9 @@ def render_chart_page():
         chart_df["x_label"] = chart_df["Month"].apply(lambda m: calendar.month_abbr[m])
         chart_title = f"📊 Monthly Stock in {selected_year}"
     elif seleted_year == "ALL":
-        
+        chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
+        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
+        chart_title = "📊 Stock by Year      
     else:
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         chart_df["x_label"] = chart_df["Operation Date"].astype(str)
