@@ -28,9 +28,8 @@ def render_chart_page():
         return
 
     df_raw = st.session_state["daily_stock_data"].copy()
-    chart_df = df_raw.groupby(["Operation Date"], as_index=False)["Quantity[Unit1]"].sum()
     fig_bar = px.bar(
-        chart_df,
+        df_raw,
         x="Operation Date",
         y="Quantity[Unit1]",
         color="Rcv So Flag",
