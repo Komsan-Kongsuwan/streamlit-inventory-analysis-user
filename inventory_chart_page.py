@@ -80,42 +80,12 @@ def render_chart_page():
         chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
         chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
     
-    #elif selected_year != "ALL":
-        # --- Daily chart for the whole year ---
-        #chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        #chart_df["x_label"] = chart_df["Operation Date"].astype(str)
-        #chart_title = f"📊 Daily Stock in {selected_year}"
-
-
-
-
-
-    elif selected_year != "ALL" and selected_month_num is None:
+    elif selected_year != "ALL":
         # --- Daily chart for the whole year ---
         chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-    
-        chart_df["x_value"] = chart_df["Operation Date"]
-    
+        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
         chart_title = f"📊 Daily Stock in {selected_year}"
-    
-        fig_line = px.line(
-            chart_df,
-            x="x_value",
-            y="Quantity[Unit1]",
-            color="Rcv So Flag",
-            title=chart_title
-        )
-    
-        # --- Force x-axis ticks to be monthly ---
-        fig_line.update_xaxes(
-            dtick="M1",   # tick every month
-            tickformat="%b",  # show short month names (Jan, Feb, ...)
-            ticklabelmode="period"
-        )
-
-
-    
-    
+        dtick="M1",   # tick every month
     
     else:
         # --- Full history across all years ---
