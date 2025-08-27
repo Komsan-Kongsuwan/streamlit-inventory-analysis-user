@@ -34,13 +34,13 @@ def render_chart_page():
     """, unsafe_allow_html=True)
 
     # --- Page Title ---
-    st.markdown("<h2 style='text-align:left; font-size:28px;'>📊 Receive-Ship Visualization (6)</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align:left; font-size:28px;'>📊 Daily Stock Visualization (6)</h2>", unsafe_allow_html=True)
 
-    if "official_data" not in st.session_state:
+    if "daily_stock_data" not in st.session_state:
         st.warning("⚠️ No data found. Please upload files in the Data Loader page first.")
         return
 
-    df_raw = st.session_state["official_data"].copy()
+    df_raw = st.session_state["daily_stock_data"].copy()
 
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
@@ -64,9 +64,6 @@ def render_chart_page():
         st.warning("⚠️ No data after filtering.")
         return
 
-    df_filtered = df_filtered[df_filtered["Rcv So Flag"].isin(["Rcv(increase)", "So(decrese)"])]
-    df_filtered['Quantity[Unit1]'] = df_filtered['Quantity[Unit1]'].abs()
-
     # ==========================================================
     # 📊 CHART
     # ==========================================================
@@ -77,28 +74,26 @@ def render_chart_page():
         all_days_flags = pd.MultiIndex.from_product([total_days, chart_df["Rcv So Flag"].unique()], names=["Day","Rcv So Flag"])
         chart_df = chart_df.set_index(["Day","Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
         chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
-        chart_title = f"📊 Daily Receive-Ship in {selected_year}-{calendar.month_abbr[selected_month_num]}"
+        chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
     elif selected_year != "ALL":
         chart_df = df_filtered.groupby(["Month","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         all_months_flags = pd.MultiIndex.from_product([months, chart_df["Rcv So Flag"].unique()], names=["Month","Rcv So Flag"])
         chart_df = chart_df.set_index(["Month","Rcv So Flag"]).reindex(all_months_flags, fill_value=0).reset_index()
         chart_df["x_label"] = chart_df["Month"].apply(lambda m: calendar.month_abbr[m])
-        chart_title = f"📊 Monthly Receive-Ship in {selected_year}"
+        chart_title = f"📊 Monthly Stock in {selected_year}"
     else:
         chart_df = df_filtered.groupby(["Year","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         chart_df["x_label"] = chart_df["Year"].astype(str)
-        chart_title = "📊 Receive-Ship by Year"
+        chart_title = "📊 Stock by Year"
 
-    fig_bar = px.bar(
+    fig_line = px.line(
         chart_df,
         x="x_label",
         y="Quantity[Unit1]",
-        color="Rcv So Flag",
-        barmode="group",
         title=chart_title,
         height=400   # chart height
     )
-    fig_bar.update_layout(
+    fig_line.update_layout(
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
@@ -109,42 +104,3 @@ def render_chart_page():
     
     
     st.plotly_chart(fig_bar, use_container_width=True)
-
-    # ==========================================================
-    # 📌 INFO BOXES
-    # ==========================================================
-    df_raw['YearMonth'] = df_raw['Year']*100 + df_raw['Month']
-    last_12_months = sorted(df_raw['YearMonth'].unique())[-12:]
-    df_last12 = df_raw[df_raw['YearMonth'].isin(last_12_months)]
-    active_items = df_last12[df_last12["Rcv So Flag"].isin(["Rcv(increase)", "So(decrese)"])]["Item Code"].unique()
-    total_item_codes = df_raw["Item Code"].nunique()
-    movement_items = len(active_items)
-    non_movement_items = total_item_codes - movement_items
-
-    if selected_year != "ALL":
-        prev_data = df_raw[df_raw["Year"] < selected_year]
-        if selected_month_num:
-            prev_data = pd.concat([prev_data, df_raw[(df_raw["Year"]==selected_year) & (df_raw["Month"]<selected_month_num)]])
-        prev_items = set(prev_data["Item Code"].unique())
-        new_item_codes = len(set(df_filtered["Item Code"].unique()) - prev_items)
-    else:
-        new_item_codes = 0
-
-    day_rcv = df_filtered[df_filtered["Rcv So Flag"]=="Rcv(increase)"]["Operation Date"].dt.date.nunique()
-    day_so  = df_filtered[df_filtered["Rcv So Flag"]=="So(decrese)"]["Operation Date"].dt.date.nunique()
-    item_rcv = df_filtered[df_filtered["Rcv So Flag"]=="Rcv(increase)"]["Item Code"].nunique()
-    item_so  = df_filtered[df_filtered["Rcv So Flag"]=="So(decrese)"]["Item Code"].nunique()
-    amount_rcv = df_filtered[df_filtered["Rcv So Flag"]=="Rcv(increase)"]["Quantity[Unit1]"].sum()
-    amount_so  = df_filtered[df_filtered["Rcv So Flag"]=="So(decrese)"]["Quantity[Unit1]"].sum()
-
-    # --- Display compact info cards in one row at bottom ---
-    cols = st.columns(9)
-    with cols[0]: st.metric("Total Items", total_item_codes)
-    with cols[1]: st.metric("Movement Items", movement_items)
-    with cols[2]: st.metric("Non-Movement", non_movement_items)
-    with cols[3]: st.metric("New Items", new_item_codes)
-    with cols[4]: st.metric("Receive (Day)", day_rcv)
-    with cols[5]: st.metric("Ship (Day)", day_so)
-    with cols[6]: st.metric("Receive (Item)", item_rcv)
-    with cols[7]: st.metric("Ship (Item)", item_so)
-    with cols[8]: st.metric("QTY Receive/Ship", f"{amount_rcv:.0f}/{amount_so:.0f}")
