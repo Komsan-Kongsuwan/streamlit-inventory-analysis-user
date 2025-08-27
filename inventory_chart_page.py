@@ -71,6 +71,7 @@ def render_chart_page():
     # 📊 CHART
     # ==========================================================
     if selected_month_num:
+        st.write(selected_month_num)
         df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
         total_days = pd.Series(range(1,32))
         chart_df = df_filtered.groupby(["Day","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
