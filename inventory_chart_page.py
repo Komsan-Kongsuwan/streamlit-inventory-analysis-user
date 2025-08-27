@@ -62,7 +62,7 @@ def render_chart_page():
     if selected_month_num:
         df_filtered = df_filtered[df_filtered["Month"] == selected_month_num]
     else:
-        df_filtered = df_filtered[df_filtered["Month"] == ""
+        df_filtered = df_filtered[df_filtered["Month"] == 0
     if items:
         df_filtered = df_filtered[df_filtered["Item Code"].isin(items)]
     if df_filtered.empty:
