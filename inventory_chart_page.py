@@ -35,7 +35,7 @@ def render_chart_page():
         y="Quantity[Unit1]",
         color="Rcv So Flag",
         barmode="group",
-        title="Daily stock,
+        title="Daily stock",
         height=400   # chart height
     )
     fig_bar.update_layout(
