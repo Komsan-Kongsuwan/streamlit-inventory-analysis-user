@@ -106,4 +106,4 @@ def render_chart_page():
     )
     
     
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.plotly_chart(fig_line, use_container_width=True)
