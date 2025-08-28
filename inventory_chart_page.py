@@ -142,8 +142,7 @@ def render_chart_page():
         template="plotly_white",
         legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
         margin=dict(l=0, r=0, t=50, b=0),
-        legend_title_text="",
-        label_title = ""
+        legend_title_text=""
     )
 
     # --- Force x-axis ticks to be monthly ---
