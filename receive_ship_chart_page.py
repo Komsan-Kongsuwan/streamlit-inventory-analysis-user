@@ -42,16 +42,18 @@ def render_chart_page():
 
     df_raw = st.session_state["receive_ship_data"].copy()
 
-
-
-    
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
 
-    months = list(range(1,13))
-    selected_month = st.sidebar.radio("Select Month (optional)", ["All"] + [calendar.month_abbr[m] for m in months], index=0)
-    selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
+    # 👇 Show months *only when* a specific year is chosen
+    if selected_year != "ALL":
+        months = list(range(1, 13))
+        selected_month = st.sidebar.radio("Select Month", [calendar.month_abbr[m] for m in months])
+        selected_month_num = list(calendar.month_abbr).index(selected_month)
+    else:
+        selected_month_num = None  # no month filter
+    
     items = st.multiselect("Item Code", df_raw["Item Code"].unique())
 
     # --- Apply filters ---
@@ -69,8 +71,6 @@ def render_chart_page():
     df_filtered = df_filtered[df_filtered["Rcv So Flag"].isin(["Rcv(increase)", "So(decrese)"])]
     df_filtered['Quantity[Unit1]'] = df_filtered['Quantity[Unit1]'].abs()
 
-
-    
     # ==========================================================
     # 📊 CHART
     # ==========================================================
@@ -100,17 +100,16 @@ def render_chart_page():
         color="Rcv So Flag",
         barmode="group",
         title=chart_title,
-        height=400   # chart height
+        height=400
     )
     fig_bar.update_layout(
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
         legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        margin=dict(l=0, r=0, t=50, b=0),  # remove extra top/bottom margin
-        legend_title_text=""  # 👈 remove legend title
+        margin=dict(l=0, r=0, t=50, b=0),
+        legend_title_text=""
     )
-    
     
     st.plotly_chart(fig_bar, use_container_width=True)
 
@@ -141,7 +140,6 @@ def render_chart_page():
     amount_rcv = df_filtered[df_filtered["Rcv So Flag"]=="Rcv(increase)"]["Quantity[Unit1]"].sum()
     amount_so  = df_filtered[df_filtered["Rcv So Flag"]=="So(decrese)"]["Quantity[Unit1]"].sum()
 
-    # --- Display compact info cards in one row at bottom ---
     cols = st.columns(9)
     with cols[0]: st.metric("Total Items", total_item_codes)
     with cols[1]: st.metric("Movement Items", movement_items)
