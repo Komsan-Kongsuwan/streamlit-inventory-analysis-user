@@ -48,7 +48,7 @@ def render_chart_page():
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
-
+    
     months = list(range(1,13))
     selected_month = st.sidebar.radio("Select Month (optional)", ["All"] + [calendar.month_abbr[m] for m in months], index=0)
     selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
