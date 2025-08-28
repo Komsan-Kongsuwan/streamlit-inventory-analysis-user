@@ -132,7 +132,6 @@ def render_chart_page():
         chart_df,
         x="x_label",
         y="Quantity[Unit1]",
-        color="Rcv So Flag",
         title=chart_title,
         height=400
     )
