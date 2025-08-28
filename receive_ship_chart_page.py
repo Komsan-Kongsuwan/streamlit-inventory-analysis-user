@@ -43,6 +43,9 @@ def render_chart_page():
 
     df_raw = st.session_state["receive_ship_data"].copy()
 
+
+    
+    """
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
@@ -56,7 +59,23 @@ def render_chart_page():
         selected_month_num = None  # no month filter
     
     items = st.multiselect("Item Code", df_raw["Item Code"].unique())
+    """
 
+    
+
+    # 👇 Show months *only when* a specific year is chosen
+    selected_month_num = None
+    if selected_year != "ALL":
+        months = list(range(1, 13))
+        selected_month = st.sidebar.radio(
+            "Select Month (optional)",
+            ["All"] + [calendar.month_abbr[m] for m in months], 
+            index=0
+        )
+        selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
+        
+    items = st.multiselect("Item Code", df_raw["Item Code"].unique())
+    
     # --- Apply filters ---
     df_filtered = df_raw.copy()
     if selected_year != "ALL":
@@ -76,16 +95,7 @@ def render_chart_page():
     # 📊 CHART
     # ==========================================================
 
-    # 👇 Show months *only when* a specific year is chosen
-    selected_month_num = None
-    if selected_year != "ALL":
-        months = list(range(1, 13))
-        selected_month = st.sidebar.radio(
-            "Select Month (optional)",
-            ["All"] + [calendar.month_abbr[m] for m in months], 
-            index=0
-        )
-        selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
+
 
     if selected_month_num:
         df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
