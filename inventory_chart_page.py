@@ -78,22 +78,7 @@ def render_chart_page():
     # 📊 CHART
     # ==========================================================
     if selected_month_num:
-        """
         # --- Daily chart for selected year+month ---
-        df_filtered["Day"] = df_filtered["Operation Date"].dt.day
-        total_days = pd.Series(range(1, 32))
-        chart_df = df_filtered.groupby(["Day", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        all_days_flags = pd.MultiIndex.from_product(
-            [total_days, chart_df["Rcv So Flag"].unique()], 
-            names=["Day", "Rcv So Flag"]
-        )
-        chart_df = chart_df.set_index(["Day", "Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
-        chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
-        chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
-        tickmode = "array"  # daily ticks
-        tickformat = None
-        """
-
         df_filtered["Day"] = df_filtered["Operation Date"].dt.day
         # ✅ get correct number of days in selected month
         days_in_month = calendar.monthrange(selected_year, selected_month_num)[1]
@@ -108,9 +93,7 @@ def render_chart_page():
         chart_title = f"📊 Daily Stock in {selected_year}-{calendar.month_abbr[selected_month_num]}"
         tickmode = "array"  # daily ticks
         tickformat = None
-
-
-    
+        
     elif selected_year != "ALL":
         # --- Chart for whole year ---
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
