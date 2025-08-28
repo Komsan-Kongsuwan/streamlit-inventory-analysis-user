@@ -151,7 +151,11 @@ def render_chart_page():
             font_size=12,
             font_color="white"
         ),   
-        
+
+        fig_line.update_traces(
+            hovertemplate="Quantity = %{y}"  # 👈 only show Quantity
+        ),        
+                
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
