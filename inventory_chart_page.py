@@ -118,6 +118,11 @@ def render_chart_page():
         title=chart_title,
         height=400
     )
+    
+    fig_line.update_traces(
+        hovertemplate="Quantity = %{y}"  # 👈 only show Quantity
+    ),  
+    
     fig_line.update_layout(
         hovermode="x",   # vertical hover across traces       
         xaxis=dict(
@@ -129,16 +134,13 @@ def render_chart_page():
             spikecolor="red",
             spikethickness=1
         ),
+        
         hoverlabel=dict(
             bgcolor="#7F7F7F",   # tooltip background
             font_size=12,
             font_color="white"
-        ),   
-
-        fig_line.update_traces(
-            hovertemplate="Quantity = %{y}"  # 👈 only show Quantity
-        ),        
-                
+        ),  
+        
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
