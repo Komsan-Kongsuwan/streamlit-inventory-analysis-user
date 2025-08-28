@@ -141,7 +141,7 @@ def render_chart_page():
             bgcolor="black",     # background color
             font_size=12,
             font_color="white"   # text color
-        )    
+        ),    
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
