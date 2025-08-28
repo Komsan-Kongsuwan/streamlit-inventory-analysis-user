@@ -75,7 +75,18 @@ def render_chart_page():
     # ==========================================================
     # 📊 CHART
     # ==========================================================
-    """
+
+    # 👇 Show months *only when* a specific year is chosen
+    selected_month_num = None
+    if selected_year != "ALL":
+        months = list(range(1, 13))
+        selected_month = st.sidebar.radio(
+            "Select Month (optional)",
+            ["All"] + [calendar.month_abbr[m] for m in months], 
+            index=0
+        )
+        selected_month_num = list(calendar.month_abbr).index(selected_month) if selected_month != "All" else None
+
     if selected_month_num:
         df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
         # ✅ get correct number of days in selected month
@@ -102,34 +113,7 @@ def render_chart_page():
         chart_df["x_label"] = chart_df["Year"].astype(str)
         chart_title = "📊 Receive-Ship by Year"
 
-    """
 
-
-    # --- Chart logic ---
-    if selected_year == "ALL":
-        # --- Full history across all years ---
-        chart_df = df_filtered.groupby(["Year", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Year"].astype(str)
-        chart_title = "📊 Receive-Ship (All Years)"
-    
-    elif selected_month_num:
-        # --- Daily chart for selected month ---
-        df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
-        total_days = pd.Series(range(1, calendar.monthrange(selected_year, selected_month_num)[1] + 1))
-        chart_df = df_filtered.groupby(["Day","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        all_days_flags = pd.MultiIndex.from_product([total_days, chart_df["Rcv So Flag"].unique()], names=["Day","Rcv So Flag"])
-        chart_df = chart_df.set_index(["Day","Rcv So Flag"]).reindex(all_days_flags, fill_value=0).reset_index()
-        chart_df["x_label"] = chart_df["Day"].apply(day_suffix)
-        chart_title = f"📊 Daily Receive-Ship in {selected_year}-{calendar.month_abbr[selected_month_num]}"
-    
-    else:
-        # --- Monthly chart for whole year (Month = All) ---
-        df_filtered["Month"] = pd.to_datetime(df_filtered["Operation Date"]).dt.month
-        chart_df = df_filtered.groupby(["Month","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        all_months_flags = pd.MultiIndex.from_product([range(1, 13), chart_df["Rcv So Flag"].unique()], names=["Month","Rcv So Flag"])
-        chart_df = chart_df.set_index(["Month","Rcv So Flag"]).reindex(all_months_flags, fill_value=0).reset_index()
-        chart_df["x_label"] = chart_df["Month"].apply(lambda m: calendar.month_abbr[m])
-        chart_title = f"📊 Monthly Receive-Ship in {selected_year}"
 
 
 
