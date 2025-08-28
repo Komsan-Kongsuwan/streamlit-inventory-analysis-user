@@ -126,12 +126,12 @@ def render_chart_page():
         legend_title_text=""
     )
 
-    # --- Force x-axis ticks ---
-    if tickformat:
+    # --- Force x-axis ticks to be monthly ---
+    if selected_year != "ALL":
         fig_line.update_xaxes(
-            dtick="M1",
-            tickformat=tickformat,
+            dtick="M1",   # tick every month
+            tickformat="%b",  # show short month names (Jan, Feb, ...)
             ticklabelmode="period"
-        )
+        )  
 
     st.plotly_chart(fig_line, use_container_width=True)
