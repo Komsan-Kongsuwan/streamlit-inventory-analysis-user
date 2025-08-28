@@ -83,37 +83,41 @@ def render_chart_page():
     elif selected_year != "ALL":
         # --- Daily chart for the whole year ---
         chart_df = df_filtered.groupby(["Operation Date","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
+        chart_df["x_label"] = chart_df["Operation Date"]
         chart_title = f"📊 Daily Stock in {selected_year}"
     
     else:
         # --- Full history across all years ---
         chart_df = df_filtered.groupby(["Operation Date", "Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
-        chart_df["x_label"] = chart_df["Operation Date"].astype(str)
+        chart_df["x_label"] = chart_df["Operation Date"]
         chart_title = "📊 Stock by Year"
 
     fig_line = px.line(
         chart_df,
         x="x_label",
         y="Quantity[Unit1]",
+        color="Rcv So Flag",
         title=chart_title,
-        height=400   # chart height
+        height=400
     )
     fig_line.update_layout(
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
         legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
-        margin=dict(l=0, r=0, t=50, b=0),  # remove extra top/bottom margin
-        legend_title_text=""  # 👈 remove legend title
+        margin=dict(l=0, r=0, t=50, b=0),
+        legend_title_text=""
     )   
 
-    # --- Force x-axis ticks to be monthly ---
+    # --- Force x-axis ticks ---
     if selected_year != "ALL":
+        # Show months (Jan, Feb, ...) if a single year is selected
         fig_line.update_xaxes(
-            dtick="M1",   # tick every month
-            tickformat="%b",  # show short month names (Jan, Feb, ...)
+            dtick="M1",
+            tickformat="%b",
             ticklabelmode="period"
-        )   
+        )
+    # 👇 If Year == "ALL", do not force monthly ticks (let Plotly auto-handle daily/continuous)
+
     
     st.plotly_chart(fig_line, use_container_width=True)
