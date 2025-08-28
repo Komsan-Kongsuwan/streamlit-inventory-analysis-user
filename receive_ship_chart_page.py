@@ -43,13 +43,14 @@ def render_chart_page():
 
     df_raw = st.session_state["receive_ship_data"].copy()
 
-
-    
-    """
     # --- Sidebar filters ---
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
 
+
+
+    
+    """
     # 👇 Show months *only when* a specific year is chosen
     if selected_year != "ALL":
         months = list(range(1, 13))
