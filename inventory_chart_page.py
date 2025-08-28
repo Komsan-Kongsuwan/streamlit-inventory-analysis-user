@@ -136,6 +136,12 @@ def render_chart_page():
         height=400
     )
     fig_line.update_layout(
+        hovermode="x unified",   # 👈 vertical hover line + one hover box
+        hoverlabel=dict(
+            bgcolor="black",     # background color
+            font_size=12,
+            font_color="white"   # text color
+        )    
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
