@@ -136,12 +136,22 @@ def render_chart_page():
         height=400
     )
     fig_line.update_layout(
-        hovermode="x unified",   # 👈 vertical hover line + one hover box
+        hovermode="x",   # vertical hover across traces       
+        xaxis=dict(
+            showspikes=True,       # enable spike line
+            spikemode="across",    # line across entire plot
+            spikesnap="cursor",    # follow mouse cursor
+            showline=False,
+            spikedash="dash",
+            spikecolor="red",
+            spikethickness=1
+        ),
         hoverlabel=dict(
-            bgcolor="black",     # background color
+            bgcolor="#7F7F7F",   # tooltip background
             font_size=12,
-            font_color="white"   # text color
-        ),    
+            font_color="white"
+        ),   
+        
         xaxis_title="",
         yaxis_title="Quantity",
         template="plotly_white",
