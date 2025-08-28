@@ -47,23 +47,6 @@ def render_chart_page():
     years_list = sorted(df_raw["Year"].dropna().unique())
     selected_year = st.sidebar.selectbox("Select Year", ["ALL"] + list(years_list), index=0)
 
-
-
-    
-    """
-    # 👇 Show months *only when* a specific year is chosen
-    if selected_year != "ALL":
-        months = list(range(1, 13))
-        selected_month = st.sidebar.radio("Select Month", [calendar.month_abbr[m] for m in months])
-        selected_month_num = list(calendar.month_abbr).index(selected_month)
-    else:
-        selected_month_num = None  # no month filter
-    
-    items = st.multiselect("Item Code", df_raw["Item Code"].unique())
-    """
-
-    
-
     # 👇 Show months *only when* a specific year is chosen
     selected_month_num = None
     if selected_year != "ALL":
@@ -95,9 +78,6 @@ def render_chart_page():
     # ==========================================================
     # 📊 CHART
     # ==========================================================
-
-
-
     if selected_month_num:
         df_filtered["Day"] = pd.to_datetime(df_filtered["Operation Date"]).dt.day
         # ✅ get correct number of days in selected month
@@ -123,13 +103,6 @@ def render_chart_page():
         chart_df = df_filtered.groupby(["Year","Rcv So Flag"], as_index=False)["Quantity[Unit1]"].sum()
         chart_df["x_label"] = chart_df["Year"].astype(str)
         chart_title = "📊 Receive-Ship by Year"
-
-
-
-
-
-
-
     
     fig_bar = px.bar(
         chart_df,
